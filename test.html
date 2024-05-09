@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Video Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+
+<body>
+    <video id="video" controls></video>
+    <button id="playButton">Play</button>
+
+    <script>
+        var video = document.getElementById('video');
+        var playButton = document.getElementById('playButton');
+        var hls;
+
+        // Check if Hls is supported
+        if (Hls.isSupported()) {
+            hls = new Hls();
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                console.log("Video and hls.js are now bound together!");
+                hls.loadSource("http://202.150.161.68/spotv1/index.m3u8");
+                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                    console.log("Manifest parsed, found " + data.levels.length + " quality level");
+                });
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = "http://202.150.161.68/spotv1/index.m3u8";
+        }
+
+        // Add event listener to play button
+        playButton.addEventListener('click', function () {
+            video.play();
+        });
+    </script>
+</body>
+
+</html>
